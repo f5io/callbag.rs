@@ -1,0 +1,6 @@
+[package]
+name = "callbag"
+version = "0.1.0"
+authors = ["Joe Harlow <joe@f5.io>"]
+
+[dependencies]
