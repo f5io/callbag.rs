@@ -1,17 +1,14 @@
 #[macro_use]
 extern crate callbag;
 
-use callbag::operators::{ from_iter, from_interval, map, filter, take, for_each };
+use callbag::operators::{filter, for_each, from_interval, from_iter, map, take};
 
 #[test]
 fn test_iter() {
     let v = (0..10).collect::<Vec<usize>>();
     let vx = v.clone();
 
-    pipe!(
-        from_iter(v),
-        for_each(move |x| assert_eq!(x, vx[x]))
-    );
+    pipe!(from_iter(v), for_each(move |x| assert_eq!(x, vx[x])));
 }
 
 #[test]
@@ -37,7 +34,7 @@ fn test_map() {
 #[test]
 fn test_filter() {
     pipe!(
-        from_iter(vec!(1, 2, 3, 4, 5)),
+        from_iter(vec![1, 2, 3, 4, 5]),
         map(|x| x * 2),
         filter(|x| x % 4 == 0),
         for_each(|x| assert_eq!(x % 4, 0))
@@ -47,12 +44,12 @@ fn test_filter() {
 #[test]
 fn test_all() {
     let v = (0..10).collect::<Vec<usize>>();
-    let vx = v.clone().iter()
+    let vx = v.clone()
+        .iter()
         .map(|x| x * 3)
         .filter(|x| x % 2 == 0)
         .map(|x| format!("The number is {}", x))
         .collect::<Vec<String>>();
-
 
     pipe!(
         from_iter(v),
