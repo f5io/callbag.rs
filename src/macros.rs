@@ -5,3 +5,11 @@ macro_rules! pipe {
         pipe!($b($a), $($rest),*)
     };
 }
+
+#[macro_export]
+macro_rules! combine {
+    ($a:expr, $b:expr) => (combine($a, $b));
+    ($a:expr, $b:expr, $($rest:expr),*) => {
+        combine!(combine($a, $b), $($rest),*)
+    };
+}

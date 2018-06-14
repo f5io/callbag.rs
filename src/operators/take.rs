@@ -3,19 +3,36 @@ pub fn take<A: 'static>(count: usize) -> Through<A, A> {
         Box::new(move |message|
             match message {
                 Message::Start(sink) => {
-                    let c = Arc::new(AtomicUsize::new(count));
+                    let count = Arc::new(RwLock::new(count));
+                    let ended = Arc::new(AtomicBool::new(false));
+                    let end = ended.clone();
+                    sink(Message::Start(Box::new(move |msg|
+                        match msg {
+                            Message::Stop => { (*ended).store(true, Ordering::SeqCst) }
+                            _ => {}
+                        }
+                    )));
+                    let s = move |x| sink(Message::Data(x));
+                    let sk = Arc::new(s);
                     source(Message::Start(Box::new(move |msg| {
                         match msg {
                             Message::Start(src) => {
-                                let c = c.clone();
+                                let count = count.clone();
+                                let end = end.clone();
                                 thread::spawn(move || {
-                                    loop { if (*c).load(Ordering::Relaxed) == 0 { break } }
+                                    loop { 
+                                        if *count.read().unwrap() <= 0
+                                        || (*end).load(Ordering::Relaxed) == true { break }
+                                    }
                                     src(Message::Stop);
                                 });
                             }
                             Message::Data(x) => {
-                                sink(Message::Data(x));
-                                (*c).fetch_sub(1, Ordering::Relaxed);
+                                let mut c = count.write().unwrap();
+                                if *c != 0 {
+                                    *c -= 1; 
+                                    sk(x);
+                                }
                             }
                             _ => {}
                         }
