@@ -2,6 +2,12 @@
 extern crate callbag;
 
 use callbag::operators::{combine, filter, for_each, from_interval, from_iter, map, take};
+use std::{thread, time};
+
+#[test]
+fn keep_thread_open() {
+    thread::sleep(time::Duration::from_millis(500));
+}
 
 #[test]
 fn test_iter() {
@@ -45,7 +51,7 @@ fn test_combine_macro() {
         combine!(
             from_iter(100..110),
             from_interval(10),
-            from_interval(35)
+            from_interval(9)
         ),
         take(30),
         for_each(|x| {

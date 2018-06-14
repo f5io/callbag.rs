@@ -2,7 +2,7 @@ pub use types::*;
 
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, RwLock};
-use std::{thread, time, fmt};
+use std::{thread, time};
 
 include!("combine.rs");
 include!("filter.rs");

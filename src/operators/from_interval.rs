@@ -10,11 +10,11 @@ pub fn from_interval(interval: u64) -> Source<usize> {
                         _ => {}
                     }
                 )));
-                let _ = thread::spawn(move || for x in 0.. {
+                thread::spawn(move || for x in 0.. {
                     if (*end).load(Ordering::Relaxed) == true { break };
                     sink(Message::Data(x));
                     thread::sleep(time::Duration::from_millis(interval));
-                }).join();
+                });
             }
             _ => {}
         }

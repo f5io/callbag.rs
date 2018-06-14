@@ -1,7 +1,4 @@
-pub fn combine<A: 'static>(a: Source<A>, b: Source<A>) -> Source<A>
-where
-    A: fmt::Debug,
-{
+pub fn combine<A: 'static>(a: Source<A>, b: Source<A>) -> Source<A> {
     let a = Arc::new(a);
     let b = Arc::new(b);
     Box::new(move |message| {
