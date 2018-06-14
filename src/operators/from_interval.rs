@@ -8,8 +8,8 @@ pub fn from_interval(interval: u64) -> Source<usize> {
                     match msg {
                         Message::Stop => { (*running).store(false, Ordering::Relaxed) }
                         _ => {}
-                    }                      
-                )));  
+                    }
+                )));
                 let _ = thread::spawn(move || for x in 0.. {
                     if (*run).load(Ordering::Relaxed) != true { break };
                     sink(Message::Data(x));

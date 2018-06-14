@@ -13,19 +13,19 @@ where
                             Message::Start(src) => {
                                 sink(Message::Start(Box::new(move |msg|
                                     match msg {
-                                        Message::Stop => { src(Message::Stop) } 
+                                        Message::Stop => { src(Message::Stop) }
                                         _ => {}
-                                    }                
+                                    }
                                 )));
                             }
                             Message::Data(x) => { sink(Message::Data(f(x))) }
                             _ => {}
-                        }          
-                    ))) 
+                        }
+                    )))
                 }
                 _ => {}
-            } 
+            }
         )
-    }) 
+    })
 }
 

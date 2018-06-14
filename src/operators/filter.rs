@@ -13,22 +13,22 @@ where
                             Message::Start(src) => {
                                 sink(Message::Start(Box::new(move |msg|
                                     match msg {
-                                        Message::Stop => { src(Message::Stop) } 
+                                        Message::Stop => { src(Message::Stop) }
                                         _ => {}
-                                    }                
+                                    }
                                 )));
                             }
                             Message::Data(x) => {
                                 if f(&x) == true {
                                     sink(Message::Data(x))
-                                } 
+                                }
                             }
                             _ => {}
                         }
                     )))
                 }
                 _ => {}
-            }         
+            }
         )
     })
 }

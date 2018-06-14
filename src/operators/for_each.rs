@@ -1,5 +1,5 @@
 pub fn for_each<A: 'static, F: 'static>(f: F) -> Sink<A>
-where 
+where
     F: Fn(A) -> () + Send + Sync + Clone,
 {
     Box::new(move |source| {
@@ -10,5 +10,5 @@ where
                 _ => {}
             }
         })))
-    }) 
+    })
 }

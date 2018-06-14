@@ -13,11 +13,11 @@ pub fn take_until_interval<A: 'static>(interval: u64) -> Through<A, A> {
                             }
                             Message::Data(x) => { sink(Message::Data(x)) }
                             _ => {}
-                        }                              
+                        }
                     )))
                 }
                 _ => {}
-            }         
+            }
         )
     })
 }

@@ -18,11 +18,11 @@ pub fn take<A: 'static>(count: usize) -> Through<A, A> {
                                 (*c).fetch_sub(1, Ordering::Relaxed);
                             }
                             _ => {}
-                        }                              
+                        }
                     })))
                 }
                 _ => {}
-            }         
+            }
         )
     })
 }

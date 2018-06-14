@@ -12,15 +12,15 @@ where
                     match msg {
                         Message::Stop => { (*running).store(false, Ordering::Relaxed) }
                         _ => {}
-                    }                      
+                    }
                 )));
                 for x in iter.into_iter() {
                     if (*run).load(Ordering::Relaxed) != true { break };
                     sink(Message::Data(x));
-                } 
+                }
             }
             _ => {}
-        }       
+        }
     )
 }
 
