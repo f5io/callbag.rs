@@ -1,4 +1,4 @@
-pub fn from_interval(interval: u64) -> Source<usize> {
+pub fn interval(interval: u64) -> Source<usize> {
     Box::new(move |message| {
         match message {
             Message::Start(sink) => {

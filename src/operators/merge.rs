@@ -1,4 +1,4 @@
-pub fn combine<A: 'static>(a: Source<A>, b: Source<A>) -> Source<A> {
+pub fn merge<A: 'static>(a: Source<A>, b: Source<A>) -> Source<A> {
     let a = Arc::new(a);
     let b = Arc::new(b);
     Box::new(move |message| {
@@ -17,7 +17,7 @@ pub fn combine<A: 'static>(a: Source<A>, b: Source<A>) -> Source<A> {
                 let s = move |x| sink(Message::Data(x));
                 let sk = Arc::new(s);
                 for sc in vec![a, b].iter() {
-                    let s = sk.clone();  
+                    let s = sk.clone();
                     let end = end.clone();
                     sc(Message::Start(Box::new(move |msg| {
                         match msg {
@@ -30,7 +30,7 @@ pub fn combine<A: 'static>(a: Source<A>, b: Source<A>) -> Source<A> {
                             }
                             Message::Data(x) => { s(x) }
                             _ => {}
-                        } 
+                        }
                     })))
                 }
             }

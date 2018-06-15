@@ -4,11 +4,13 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, RwLock};
 use std::{thread, time};
 
-include!("combine.rs");
 include!("filter.rs");
+include!("flatten.rs");
 include!("for_each.rs");
-include!("from_interval.rs");
 include!("from_iter.rs");
+include!("interval.rs");
 include!("map.rs");
+include!("merge.rs");
+include!("skip.rs");
 include!("take.rs");
 include!("take_until_interval.rs");

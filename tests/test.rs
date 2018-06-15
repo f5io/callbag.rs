@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate callbag;
 
-use callbag::operators::{combine, filter, for_each, from_interval, from_iter, map, take};
+use callbag::operators::{merge, flatten, filter, for_each, interval, from_iter, map, take, skip};
 use std::{thread, time};
 
 #[test]
@@ -22,7 +22,7 @@ fn test_interval() {
     let v = (0..5).collect::<Vec<usize>>();
 
     pipe!(
-        from_interval(20),
+        interval(20),
         take(5),
         for_each(move |x| {
             println!("test_interval: {}", x);
@@ -32,30 +32,50 @@ fn test_interval() {
 }
 
 #[test]
-fn test_combine() {
+fn test_flatten() {
+    let v = vec![11, 21, 31, 12, 22, 32, 13, 23, 33];
+
     pipe!(
-        combine(
-            from_iter(0..10),
-            pipe!(from_interval(10), take(20))
-        ),
-        take(20),
-        for_each(|x| {
-            println!("test_combine: {}", x)
+        from_iter(1..4),
+        map(|x| {
+            pipe!(
+                from_iter(vec![10, 20, 30]),
+                map(move |y| x + y)
+            ) 
+        }),
+        flatten,
+        for_each(move |x| {
+            println!("test_flatten: {}", x);
+            assert_eq!(v.contains(&x), true);
         })
     )
 }
 
 #[test]
-fn test_combine_macro() {
+fn test_merge() {
     pipe!(
-        combine!(
+        merge(
+            from_iter(0..10),
+            pipe!(interval(10), take(20))
+        ),
+        take(20),
+        for_each(|x| {
+            println!("test_merge: {}", x)
+        })
+    )
+}
+
+#[test]
+fn test_merge_macro() {
+    pipe!(
+        merge!(
             from_iter(100..110),
-            from_interval(10),
-            from_interval(9)
+            interval(10),
+            interval(9)
         ),
         take(30),
         for_each(|x| {
-            println!("test_combine_macro: {}", x)
+            println!("test_merge_macro: {}", x)
         })
     )
 }
@@ -81,6 +101,20 @@ fn test_filter() {
         for_each(|x| {
             println!("test_filter: {}", x);
             assert_eq!(x % 4, 0)
+        })
+    );
+}
+
+#[test]
+fn test_skip() {
+    let v = (3..10).collect::<Vec<usize>>();
+
+    pipe!(
+        from_iter(1..10),
+        skip(2),
+        for_each(move |x| {
+            println!("test_skip: {}", x);
+            assert_eq!(v.contains(&x), true);
         })
     );
 }

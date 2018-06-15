@@ -7,9 +7,9 @@ macro_rules! pipe {
 }
 
 #[macro_export]
-macro_rules! combine {
-    ($a:expr, $b:expr) => (combine($a, $b));
+macro_rules! merge {
+    ($a:expr, $b:expr) => (merge($a, $b));
     ($a:expr, $b:expr, $($rest:expr),*) => {
-        combine!(combine($a, $b), $($rest),*)
+        merge!(merge($a, $b), $($rest),*)
     };
 }
