@@ -6,11 +6,14 @@ pub fn merge<A: 'static>(a: Source<A>, b: Source<A>) -> Source<A> {
         let b = b.clone();
         match message {
             Message::Start(sink) => {
-                let ended = Arc::new(AtomicBool::new(false));
+                let ended = Arc::new(RwLock::new(false));
                 let end = ended.clone();
                 sink(Message::Start(Box::new(move |msg|
                     match msg {
-                        Message::Stop => { (*ended).store(true, Ordering::SeqCst) }
+                        Message::Stop => {
+                            let mut e = ended.write().unwrap();
+                            *e = true;
+                        }
                         _ => {}
                     }
                 )));
@@ -24,7 +27,7 @@ pub fn merge<A: 'static>(a: Source<A>, b: Source<A>) -> Source<A> {
                             Message::Start(src) => {
                                 let end = end.clone();
                                 thread::spawn(move || {
-                                    loop { if (*end).load(Ordering::Relaxed) == true { break } }
+                                    loop { if *end.read().unwrap() == true { break } }
                                     src(Message::Stop);
                                 });
                             }

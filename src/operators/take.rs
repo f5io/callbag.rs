@@ -4,11 +4,14 @@ pub fn take<A: 'static>(count: usize) -> Through<A, A> {
             match message {
                 Message::Start(sink) => {
                     let count = Arc::new(RwLock::new(count));
-                    let ended = Arc::new(AtomicBool::new(false));
+                    let ended = Arc::new(RwLock::new(false));
                     let end = ended.clone();
                     sink(Message::Start(Box::new(move |msg|
                         match msg {
-                            Message::Stop => { (*ended).store(true, Ordering::SeqCst) }
+                            Message::Stop => {
+                                let mut e = ended.write().unwrap();
+                                *e = true;
+                            }
                             _ => {}
                         }
                     )));
@@ -20,7 +23,7 @@ pub fn take<A: 'static>(count: usize) -> Through<A, A> {
                                 thread::spawn(move || {
                                     loop {
                                         if *count.read().unwrap() <= 0
-                                        || (*end).load(Ordering::Relaxed) == true { break }
+                                        || *end.read().unwrap() == true { break }
                                     }
                                     src(Message::Stop);
                                 });

@@ -5,17 +5,20 @@ where
     Box::new(move |message|
         match message {
             Message::Start(sink) => {
-                let ended = Arc::new(AtomicBool::new(false));
+                let ended = Arc::new(RwLock::new(false));
                 let end = ended.clone();
                 let iter = iter.clone();
                 sink(Message::Start(Box::new(move |msg|
                     match msg {
-                        Message::Stop => { (*ended).store(true, Ordering::SeqCst) }
+                        Message::Stop => {
+                            let mut e = ended.write().unwrap();
+                            *e = true;
+                        }
                         _ => {}
                     }
                 )));
                 for x in iter.into_iter() {
-                    if (*end).load(Ordering::Relaxed) == true { break };
+                    if *end.read().unwrap() == true { break };
                     sink(Message::Data(x));
                 }
             }
