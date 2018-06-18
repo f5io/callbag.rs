@@ -3,7 +3,7 @@ where
     F: Fn(B, A) -> B + Send + Sync + Clone,
     B: Send + Sync + Clone,
 {
-    let b = Arc::new(RwLock::new(vec![b]));
+    let b = Arc::new(RwLock::new(Some(b)));
     Box::new(move |source| {
         let f = f.clone();
         let b = b.clone();
@@ -23,16 +23,13 @@ where
                                 )));
                             }
                             Message::Data(x) => {
-                                let acc = {
-                                    let b = b.read().unwrap();
-                                    b.last().cloned() 
-                                };
+                                let acc = b.read().unwrap().clone();
                                 {
                                     let mut b = b.write().unwrap();
-                                    b[0] = f(acc.unwrap(), x);
+                                    *b = Some(f(acc.unwrap(), x));
                                 }
-                                let acc = b.read().unwrap();
-                                sink(Message::Data(acc.last().cloned().unwrap()))
+                                let acc = b.read().unwrap().clone();
+                                sink(Message::Data(acc.unwrap()))
                             }
                             _ => {}
                         }
