@@ -32,7 +32,7 @@ The list below shows what's currently implemented/being attempted.
 ### Transformation operators
 
 - [x] `map`
-- [ ] `scan`
+- [x] `scan`
 - [x] `flatten`
 
 ### Filtering operators

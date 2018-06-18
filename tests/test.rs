@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate callbag;
 
-use callbag::operators::{merge, flatten, filter, for_each, interval, from_iter, map, take, skip};
+use callbag::operators::{merge, scan, flatten, filter, for_each, interval, from_iter, map, take, skip};
 use std::{thread, time};
 
 #[test]
@@ -15,6 +15,15 @@ fn test_iter() {
     let vx = v.clone();
 
     pipe!(from_iter(v), for_each(move |x| assert_eq!(x, vx[x])));
+}
+
+#[test]
+fn test_scan() {
+    pipe!(
+        from_iter(1..25),
+        scan(|a, b| a + b, 0),
+        for_each(|x| println!("test_scan: {}", x))
+    )
 }
 
 #[test]
