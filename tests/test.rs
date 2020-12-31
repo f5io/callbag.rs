@@ -1,7 +1,8 @@
-#[macro_use]
-extern crate callbag;
-
-use callbag::operators::{merge, scan, flatten, filter, for_each, interval, from_iter, map, take, skip};
+use callbag::{
+    merge,
+    operators::{filter, flatten, for_each, from_iter, interval, map, merge, scan, skip, take},
+    pipe,
+};
 use std::{thread, time};
 
 #[test]
@@ -46,12 +47,7 @@ fn test_flatten() {
 
     pipe!(
         from_iter(1..4),
-        map(|x| {
-            pipe!(
-                from_iter(vec![10, 20, 30]),
-                map(move |y| x + y)
-            ) 
-        }),
+        map(|x| { pipe!(from_iter(vec![10, 20, 30]), map(move |y| x + y)) }),
         flatten,
         for_each(move |x| {
             println!("test_flatten: {}", x);
@@ -63,29 +59,18 @@ fn test_flatten() {
 #[test]
 fn test_merge() {
     pipe!(
-        merge(
-            from_iter(0..10),
-            pipe!(interval(10), take(20))
-        ),
+        merge(from_iter(0..10), pipe!(interval(10), take(20))),
         take(20),
-        for_each(|x| {
-            println!("test_merge: {}", x)
-        })
+        for_each(|x| { println!("test_merge: {}", x) })
     )
 }
 
 #[test]
 fn test_merge_macro() {
     pipe!(
-        merge!(
-            from_iter(100..110),
-            interval(10),
-            interval(9)
-        ),
+        merge!(from_iter(100..110), interval(10), interval(9)),
         take(30),
-        for_each(|x| {
-            println!("test_merge_macro: {}", x)
-        })
+        for_each(|x| { println!("test_merge_macro: {}", x) })
     )
 }
 
@@ -131,7 +116,7 @@ fn test_skip() {
 #[test]
 fn test_all() {
     let v = (0..10).collect::<Vec<usize>>();
-    let vx = v.clone()
+    let vx = v
         .iter()
         .map(|x| x * 3)
         .filter(|x| x % 2 == 0)
