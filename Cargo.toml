@@ -5,3 +5,4 @@ authors = ["Joe Harlow <joe@f5.io>"]
 edition = "2018"
 
 [dependencies]
+async-std = "1.8.0"

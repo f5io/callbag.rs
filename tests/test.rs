@@ -3,12 +3,6 @@ use callbag::{
     operators::{filter, flatten, for_each, from_iter, interval, map, merge, scan, skip, take},
     pipe,
 };
-use std::{thread, time};
-
-#[test]
-fn keep_thread_open() {
-    thread::sleep(time::Duration::from_millis(500));
-}
 
 #[test]
 fn test_iter() {
