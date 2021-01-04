@@ -1,7 +1,5 @@
-use std::{
-    sync::{Arc, RwLock},
-    thread,
-};
+use async_std::task;
+use std::sync::{Arc, RwLock};
 
 use crate::types::{Message, Through};
 
@@ -21,7 +19,7 @@ pub fn skip<A: 'static>(count: usize) -> Through<A, A> {
                 source(Message::Start(Box::new(move |msg| match msg {
                     Message::Start(src) => {
                         let end = end.clone();
-                        thread::spawn(move || {
+                        task::spawn(async move {
                             loop {
                                 if *end.read().unwrap() {
                                     break;

@@ -1,6 +1,7 @@
+use async_std::task;
 use std::{
     sync::{Arc, RwLock},
-    thread, time,
+    time,
 };
 
 use crate::types::{Message, Source};
@@ -16,13 +17,13 @@ pub fn interval(interval: u64) -> Source<usize> {
                     *e = true;
                 }
             })));
-            thread::spawn(move || {
+            task::spawn(async move {
                 for x in 0.. {
                     if *end.read().unwrap() {
                         break;
                     };
                     sink(Message::Data(x));
-                    thread::sleep(time::Duration::from_millis(interval));
+                    task::sleep(time::Duration::from_millis(interval)).await;
                 }
             });
         }

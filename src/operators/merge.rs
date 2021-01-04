@@ -1,7 +1,5 @@
-use std::{
-    sync::{Arc, RwLock},
-    thread,
-};
+use async_std::task;
+use std::sync::{Arc, RwLock};
 
 use crate::types::{Message, Source};
 
@@ -28,7 +26,7 @@ pub fn merge<A: 'static>(a: Source<A>, b: Source<A>) -> Source<A> {
                 sc(Message::Start(Box::new(move |msg| match msg {
                     Message::Start(src) => {
                         let end = end.clone();
-                        thread::spawn(move || {
+                        task::spawn(async move {
                             loop {
                                 if *end.read().unwrap() {
                                     break;

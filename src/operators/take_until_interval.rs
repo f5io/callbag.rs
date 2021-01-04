@@ -1,4 +1,5 @@
-use std::{thread, time};
+use async_std::task;
+use std::time;
 
 use crate::types::{Message, Through};
 
@@ -8,8 +9,8 @@ pub fn take_until_interval<A: 'static>(interval: u64) -> Through<A, A> {
             if let Message::Start(sink) = message {
                 source(Message::Start(Box::new(move |msg| match msg {
                     Message::Start(src) => {
-                        thread::spawn(move || {
-                            thread::sleep(time::Duration::from_millis(interval));
+                        task::spawn(async move {
+                            task::sleep(time::Duration::from_millis(interval)).await;
                             src(Message::Stop);
                         });
                     }

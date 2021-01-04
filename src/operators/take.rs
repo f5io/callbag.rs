@@ -1,7 +1,5 @@
-use std::{
-    sync::{Arc, RwLock},
-    thread,
-};
+use async_std::task;
+use std::sync::{Arc, RwLock};
 
 use crate::types::{Message, Through};
 
@@ -22,7 +20,7 @@ pub fn take<A: 'static>(count: usize) -> Through<A, A> {
                     Message::Start(src) => {
                         let count = count.clone();
                         let end = end.clone();
-                        thread::spawn(move || {
+                        task::spawn(async move {
                             loop {
                                 if *count.read().unwrap() == 0 || *end.read().unwrap() {
                                     break;
