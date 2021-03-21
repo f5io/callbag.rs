@@ -1,6 +1,9 @@
 use callbag::{
     merge,
-    operators::{filter, flatten, for_each, from_iter, interval, map, merge, scan, skip, take},
+    operators::{
+        filter, flatten, for_each, from_iter, interval, map, merge, scan, skip, skip_until,
+        skip_while, take, take_until, take_while,
+    },
     pipe,
 };
 
@@ -102,6 +105,62 @@ fn test_skip() {
         skip(2),
         for_each(move |x| {
             println!("test_skip: {}", x);
+            assert_eq!(v.contains(&x), true);
+        })
+    );
+}
+
+#[test]
+fn test_skip_until() {
+    let v = (3..10).collect::<Vec<usize>>();
+
+    pipe!(
+        from_iter(1..10),
+        skip_until(|x| x % 3 == 0),
+        for_each(move |x| {
+            println!("test_skip_until: {}", x);
+            assert_eq!(v.contains(&x), true);
+        })
+    );
+}
+
+#[test]
+fn test_skip_while() {
+    let v = (3..10).collect::<Vec<usize>>();
+
+    pipe!(
+        from_iter(1..10),
+        skip_while(|x| x % 3 != 0),
+        for_each(move |x| {
+            println!("test_skip_while: {}", x);
+            assert_eq!(v.contains(&x), true);
+        })
+    );
+}
+
+#[test]
+fn test_take_until() {
+    let v = (1..8).collect::<Vec<usize>>();
+
+    pipe!(
+        from_iter(1..10),
+        take_until(|x| x % 8 == 0),
+        for_each(move |x| {
+            println!("test_take_until: {}", x);
+            assert_eq!(v.contains(&x), true);
+        })
+    );
+}
+
+#[test]
+fn test_take_while() {
+    let v = (1..8).collect::<Vec<usize>>();
+
+    pipe!(
+        from_iter(1..10),
+        take_while(|x| x % 8 != 0),
+        for_each(move |x| {
+            println!("test_take_while: {}", x);
             assert_eq!(v.contains(&x), true);
         })
     );

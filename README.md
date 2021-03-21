@@ -38,12 +38,12 @@ The list below shows what's currently implemented/being attempted.
 ### Filtering operators
 
 - [x] `take`
-- [ ] `take_until`
-- [ ] `take_while`
+- [x] `take_until`
+- [x] `take_while`
 - [x] `take_until_interval`
 - [x] `skip`
-- [ ] `skip_until`
-- [ ] `skip_while`
+- [x] `skip_until`
+- [x] `skip_while`
 - [x] `filter`
 
 ### Combination operators
